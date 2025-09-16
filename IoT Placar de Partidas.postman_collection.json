@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "baa3b091-0ff7-4a95-84d2-bdfd72e6f4e4",
+		"name": "IoT Placar de Partidas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47324987",
+		"_collection_link": "https://tsk1i1-4021544.postman.co/workspace/Nicolas-Mendes-dos-Santos's-Wor~e361dfff-a0b1-4945-8b07-32523fd3f407/collection/47324987-baa3b091-0ff7-4a95-84d2-bdfd72e6f4e4?action=share&source=collection_link&creator=47324987"
+	},
+	"item": [
+		{
+			"name": "Provisionar",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"device_id\": \"placar001\",\r\n      \"entity_name\": \"urn:ngsi-ld:Scoreboard:001\",\r\n      \"entity_type\": \"Thing\",\r\n      \"transport\": \"MQTT\",\r\n      \"attributes\": [\r\n        { \"object_id\": \"TA\", \"name\": \"scoreTeamA\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"TB\", \"name\": \"scoreTeamB\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"j\", \"name\": \"playerScores\", \"type\": \"Text\" }\r\n      ],\r\n      \"commands\": [\r\n        { \"name\": \"reset\", \"type\": \"command\" },\r\n        { \"name\": \"addPoint\", \"type\": \"command\" },\r\n        { \"name\": \"removePoint\", \"type\": \"command\" }\r\n      ]\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:4041/iot/devices",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "4041",
+					"path": [
+						"iot",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"Comandos para o Placar Eletronico\",\r\n  \"dataProvided\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:Scoreboard:001\",\r\n        \"type\": \"Thing\" \r\n      }\r\n    ],\r\n    \"attrs\": [\r\n      \"reset\",\r\n      \"addPoint\",\r\n      \"removePoint\"\r\n    ]\r\n  },\r\n  \"provider\": {\r\n    \"http\": {\r\n      \"url\": \"http://iot-agent-mqtt:4041\"\r\n    },\r\n    \"legacyForwarding\": true\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/registrations?Content-Type=application/json&fiware-service=smart&fiware-servicepath=/",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"registrations"
+					],
+					"query": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "fiware-service",
+							"value": "smart"
+						},
+						{
+							"key": "fiware-servicepath",
+							"value": "/"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset do Placar",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"reset\": {\r\n    \"type\" : \"command\",\r\n    \"value\" : \"\" \r\n }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver Placar",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001?options=keyValues&attrs=scoreTeamA,scoreTeamB",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001"
+					],
+					"query": [
+						{
+							"key": "options",
+							"value": "keyValues"
+						},
+						{
+							"key": "attrs",
+							"value": "scoreTeamA,scoreTeamB"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
