@@ -49,8 +49,9 @@ Orion Context Broker: O "cérebro" do sistema, armazena o contexto e expõe a AP
 Cliente (Postman): Interação com a API do Orion, permitindo configurar, controlar e monitorar o placar remotamente.
 
 Fluxo de dados:
-
+``` cpp
 ESP32 <--> Broker MQTT <--> IoT Agent <--> Orion Broker <--> Postman
+```
 
 ------------------------------------------------------------------------
 
@@ -66,48 +67,62 @@ ESP32 <--> Broker MQTT <--> IoT Agent <--> Orion Broker <--> Postman
   Para facilitar as conexões sem solda.  
 
 - **6x Botões de pressão (push buttons)**  
-  - **Botão 1 (esquerda)** – GPIO32  
-  - **Botão 2 (baixo)** – GPIO26  
-  - **Botão 3 (cima)** – GPIO25  
-  - **Botão 4 (direita)** – GPIO33  
-  - **Botão 5 (confirmar)** – GPIO27  
-  - **Botão 6 (voltar)** – GPIO14  
-
+    Para a navegação entre telas
 - **Jumpers (fios de conexão)**  
-  Para interligar o ESP32, OLED, botões e a protoboard.  
 
-- **Fonte de alimentação (3.3V do ESP32)**  
-  Alimenta o display OLED e os botões. 
+
+
+  ## 🔌 Diagrama de Ligações
+
+    ### 📟 Conexão do Display OLED (SSD1306 - I2C)
+    
+    | OLED SSD1306 | ESP32       |
+    |--------------|-------------|
+    | VCC          | 3.3V        |
+    | GND          | GND         |
+    | SDA          | GPIO21      |
+    | SCL          | GPIO22      |
+    
+    ---
+    
+    ### 🎮 Conexão dos Botões
+    
+    | Botão | Função    | ESP32 (GPIO) |
+    |-------|---------|--------------|
+    | 1     | Esquerda   | 32           |
+    | 2     | Baixo   | 26           |
+    | 3     | Cima   | 25           |
+    | 4     | Direita   | 33           |
+    | 5     | Confirmar    | 27           |
+    | 6     | Retornar| 14           |
+    
+    
+    ### 🔋 Alimentação
+    
+    - O ESP32 alimenta todo o sistema:
+      - **3.3V** → VCC do OLED + botões  
+      - **GND** → GND do OLED + botões  
+
 
 ------------------------------------------------------------------------
 ## ⚙️ Software e Dependências
+
 Backend
 
-Docker e Docker-Compose
+- Docker e Docker-Compose
+- Repositório FIWARE Descomplicado
+- Firmware (ESP32)
+- Arduino IDE ou PlatformIO (VS Code).
+- Bibliotecas Arduino:
+- Wire
+- Adafruit_GFX
+- Adafruit_SSD1306
+- EEPROM
+- WiFi
+- PubSubClient
+- Postman
 
-Repositório FIWARE Descomplicado
-
-Firmware (ESP32)
-
-Arduino IDE ou PlatformIO (VS Code).
-
-Bibliotecas Arduino:
-
-Wire
-
-Adafruit_GFX
-
-Adafruit_SSD1306
-
-EEPROM
-
-WiFi
-
-PubSubClient
-
-Controle e Teste
-
-Postman
+---
 
 ## ▶️ Como Executar
 
