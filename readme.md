@@ -149,7 +149,7 @@ Backend
 
 1. Importe o [FIWARE Descomplicado](https://github.com/fabiocabrini/fiware)
 
-2. Importe o [colocar ainda](link)
+2. Importe a colection [IoT Placar de Jogos](https://github.com/404-Foundnt/IoT-Passa-a-Bola/blob/main/IoT%20Placar%20de%20Partidas.postman_collection.json)
 
 3. Faça o Health Check
 
