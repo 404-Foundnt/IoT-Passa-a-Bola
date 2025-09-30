@@ -30,7 +30,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"device_id\": \"placar001\",\r\n      \"entity_name\": \"urn:ngsi-ld:Scoreboard:001\",\r\n      \"entity_type\": \"Thing\",\r\n      \"transport\": \"MQTT\",\r\n      \"attributes\": [\r\n        { \"object_id\": \"TA\", \"name\": \"scoreTeamA\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"TB\", \"name\": \"scoreTeamB\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"j\", \"name\": \"playerScores\", \"type\": \"Text\" }\r\n      ],\r\n      \"commands\": [\r\n        { \"name\": \"reset\", \"type\": \"command\" },\r\n        { \"name\": \"addPoint\", \"type\": \"command\" },\r\n        { \"name\": \"removePoint\", \"type\": \"command\" }\r\n      ]\r\n    }\r\n  ]\r\n}",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"device_id\": \"placar001\",\r\n      \"entity_name\": \"urn:ngsi-ld:Scoreboard:001\",\r\n      \"entity_type\": \"Thing\",\r\n      \"transport\": \"MQTT\",\r\n      \"attributes\": [\r\n        { \"object_id\": \"TA\", \"name\": \"scoreTeamA\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"TB\", \"name\": \"scoreTeamB\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"j\", \"name\": \"playerScores\", \"type\": \"Text\" },\r\n        { \"object_id\": \"cpA\", \"name\": \"champ_pointsA\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"cwA\", \"name\": \"champ_winsA\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"cpB\", \"name\": \"champ_pointsB\", \"type\": \"Integer\" },\r\n        { \"object_id\": \"cwB\", \"name\": \"champ_winsB\", \"type\": \"Integer\" }\r\n      ],\r\n      \"commands\": [\r\n        { \"name\": \"reset\", \"type\": \"command\" },\r\n        { \"name\": \"addPoint\", \"type\": \"command\" },\r\n        { \"name\": \"removePoint\", \"type\": \"command\" },\r\n        { \"name\": \"applyPenalty\", \"type\": \"command\" },\r\n        { \"name\": \"finalizeMatch\", \"type\": \"command\" },\r\n        { \"name\": \"resetChampionship\", \"type\": \"command\"}\r\n      ]\r\n    }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -59,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"description\": \"Comandos para o Placar Eletronico\",\r\n  \"dataProvided\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:Scoreboard:001\",\r\n        \"type\": \"Thing\" \r\n      }\r\n    ],\r\n    \"attrs\": [\r\n      \"reset\",\r\n      \"addPoint\",\r\n      \"removePoint\"\r\n    ]\r\n  },\r\n  \"provider\": {\r\n    \"http\": {\r\n      \"url\": \"http://iot-agent-mqtt:4041\"\r\n    },\r\n    \"legacyForwarding\": true\r\n  }\r\n}",
+					"raw": "{\r\n  \"description\": \"Comandos para o Placar Eletronico\",\r\n  \"dataProvided\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:Scoreboard:001\",\r\n        \"type\": \"Thing\" \r\n      }\r\n    ],\r\n    \"attrs\": [\r\n      \"reset\",\r\n      \"addPoint\",\r\n      \"removePoint\",\r\n      \"applyPenalty\",\r\n      \"finalizeMatch\",\r\n      \"resetChampionship\"\r\n    ]\r\n  },\r\n  \"provider\": {\r\n    \"http\": {\r\n      \"url\": \"http://iot-agent-mqtt:4041\"\r\n    },\r\n    \"legacyForwarding\": true\r\n  }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -96,6 +96,41 @@
 			"response": []
 		},
 		{
+			"name": "Get entities",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Reset do Placar",
 			"request": {
 				"method": "PATCH",
@@ -114,6 +149,226 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n \"reset\": {\r\n    \"type\" : \"command\",\r\n    \"value\" : \"\" \r\n }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adicionar pontos",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"addPoint\": {\r\n    \"type\": \"command\",\r\n    \"value\": {\r\n      \"time\": 1,\r\n      \"jogador\": 4\r\n    }\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remover Pontos",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"removePoint\": {\r\n    \"type\": \"command\",\r\n    \"value\": {\r\n      \"time\": 1,\r\n      \"jogador\": 4\r\n    }\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs?fiware-service=smart&fiware-servicepath=/",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs"
+					],
+					"query": [
+						{
+							"key": "fiware-service",
+							"value": "smart"
+						},
+						{
+							"key": "fiware-servicepath",
+							"value": "/"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Penalizar",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"applyPenalty\": {\r\n    \"type\": \"command\",\r\n    \"value\": { \"time\": 0, \"jogador\": 3 }\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FInalizar Partida",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"finalizeMatch\": {\r\n    \"type\": \"command\",\r\n    \"value\": \"\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resetar campeonato",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"resetChampionship\": {\r\n    \"type\": \"command\",\r\n    \"value\": \"\"\r\n  }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -173,6 +428,100 @@
 						{
 							"key": "attrs",
 							"value": "scoreTeamA,scoreTeamB"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver pontos das jogadoras",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001/attrs/playerScores?options=values",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001",
+						"attrs",
+						"playerScores"
+					],
+					"query": [
+						{
+							"key": "options",
+							"value": "values"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tabela do Campeonato",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "fiware-service",
+						"value": "smart",
+						"type": "text"
+					},
+					{
+						"key": "fiware-servicepath",
+						"value": "/",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Scoreboard:001?options=keyValues&attrs=champ_pointsA,champ_winsA,champ_pointsB,champ_winsB",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "1026",
+					"path": [
+						"v2",
+						"entities",
+						"urn:ngsi-ld:Scoreboard:001"
+					],
+					"query": [
+						{
+							"key": "options",
+							"value": "keyValues"
+						},
+						{
+							"key": "attrs",
+							"value": "champ_pointsA,champ_winsA,champ_pointsB,champ_winsB"
 						}
 					]
 				}
